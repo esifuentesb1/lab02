@@ -33,3 +33,24 @@ resource "docker_container" "api" {
     external = var.api_port[terraform.workspace]
   }
 }
+## 5 . Agregar base de datos
+# 1. Definir la imagen oficial de MySQL
+resource "docker_image" "img_mysql" {
+  name = "mysql:8.0"
+}
+
+# 2. Definir el contenedor de la base de datos
+resource "docker_container" "db" {
+  name  = "db-${terraform.workspace}-01"
+  image = docker_image.img_mysql.image_id
+  # Variables de entorno necesarias para MySQL
+  env = [
+    "MYSQL_ROOT_PASSWORD= contraseña123",
+    "MYSQL_DATABASE=base de datos lab"
+  ]
+  # Mapeo del puerto 3306
+  ports {
+    internal = 3306
+    external = 3306
+  }
+}
